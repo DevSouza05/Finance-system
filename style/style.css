@@ -21,11 +21,3 @@ main{
     align-items: center;
 }
 
-.resume{
-    display: flex;
-    padding: 10px 0px;
-    gap: 40px;
-    width: 100%;
-    justify-content: center;
-   flex-wrap: wrap; 
-}
