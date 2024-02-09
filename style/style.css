@@ -10,7 +10,7 @@ body{
     height: 100vh;
     display: flex;
     justify-content: center;
-    background-color: aqua;
+   
 }
 
 main{
@@ -21,3 +21,44 @@ main{
     align-items: center;
 }
 
+.resume{
+    display: flex;
+    padding: 10px 0px;
+    gap: 40px;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.resume > div{
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 0px 5px #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    width: 150px;
+}
+
+.NewItem{
+    display: flex;
+    gap: 10px;
+    align-items: end;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.divDesc, .divType, .divAmount{
+    display: flex;
+    flex-direction: column;
+}
+
+.NewItem > button{
+    background-color: #2C7302;
+    color: white;
+    border: none;
+    padding: 0 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 34px;    
+}
