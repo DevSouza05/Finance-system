@@ -11,4 +11,24 @@ const total = document.querySelector(".total");
 
 let items;
 
+function insertItem(item, index) {
+    let tr = document.createElement("tr");
+
+    tr.innerHTML =`
+    <td>${item.desc}<td>`
+
+}
+
+function loadItens (){
+    items =getItensBD();
+    tbody.innerHTML ="";
+    items.forEach((item,index) => {
+        insertItem(item,index);
+    });
+}
+
 const getItensBD = () => JSON.parse(localStorage.getItem("db_items")) ?? [];
+const setItensBD = () =>
+    localStorage.setItem("db_items",JSON.stringify(items));
+
+    loadItens();
