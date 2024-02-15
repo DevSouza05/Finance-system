@@ -11,16 +11,27 @@ const total = document.querySelector(".total");
 
 let items;
 
+function deleteItem(index){
+    items.splice(index,1);
+    setItensBD(); //seta no banco as informaçoes 
+    loadItens();
+
+}
+
 function insertItem(item, index) {
     let tr = document.createElement("tr");
 
     tr.innerHTML =`
-    <td>${item.desc}<td>`
-
+    <td>${item.desc}<td>
+    <td>R$ ${item.amount}<td>
+    <td class="columnType"> ${
+        item.type === "Entrada"
+    }
+    `
 }
 
 function loadItens (){
-    items =getItensBD();
+    items = getItensBD();
     tbody.innerHTML ="";
     items.forEach((item,index) => {
         insertItem(item,index);
