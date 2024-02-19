@@ -54,7 +54,7 @@ main{
 }
 
 .NewItem > button{
-    background-color: #2C7302;
+    background-color: blue;
     color: white;
     border: none;
     padding: 0 15px;
