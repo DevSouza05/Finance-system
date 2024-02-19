@@ -11,6 +11,24 @@ const total = document.querySelector(".total");
 
 let items;
 
+btnNew.onclick = () =>{
+    if(descItem.value===""|| amount.value ==="" || type.value===""){
+        return alert("Preencha todos os campos");
+    }
+
+   items.push({
+    desc:descItem.value,
+    amount:Math.abs(amount.value).toFixed(2),
+    type:type.value
+    });
+
+    setItensBD();
+    loadItens();
+
+    descItem.value ="";
+    amount.value="";
+};
+
 function deleteItem(index){
     items.splice(index,1);
     setItensBD(); //seta no banco as informaçoes 
@@ -41,10 +59,26 @@ function loadItens (){
 function getTotals(){
     const amountIcomes = items 
     .filter((items) => items.type ==="Entrada")
-    .map
+    .map((transaction) => Number(transaction.amount));
+
+    const amountExpenses= items 
+    .filter((items) => items.type ==="Saída")
+    .map((transaction) => Number(transaction.amount));
+
+    const totalIcomes = amountIcomes .reduce((acc,cur) =>  acc + cur, 0).toFixed(2);
+    const totalExpenses = Math.abs(amountExpenses.reduce((acc,cur) => acc + cur ,0)).toFixed(2)
+
+    const totalItems = (totalIcomes - totalExpenses).toFixed(2);
+
+    incomes.innerHTML=totalIcomes;
+    expenses.innerHTML=totalExpenses;
+    total.innerHTML=totalItems;
+   
+
+
 }
 
-const getItensBD = () => JSON.parse(localStorage.getItem("db_items")) ?? [];
+const getItensBD = () => JSON.parse(localStorage.getItem("db_items")) ?? []; //pegando inf da banco
 const setItensBD = () =>
     localStorage.setItem("db_items",JSON.stringify(items));
 
