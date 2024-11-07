@@ -1,9 +1,9 @@
 "use strict"
 
-// Espera o carregamento completo do DOM antes de executar o código
+
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Funções para manipulação do LocalStorage
+    
     const getItensBD = () => {
         const storedItems = JSON.parse(localStorage.getItem("db_items"));
         return storedItems || [];
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem("db_items", JSON.stringify(items));
     };
 
-    // Seleção de elementos do DOM
+   
     const tbody = document.querySelector("tbody");
     const descItem = document.querySelector("#desc");
     const amount = document.querySelector("#amount");
@@ -25,23 +25,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const expenses = document.querySelector(".expenses");
     const total = document.querySelector(".total");
 
-    let items = getItensBD();  // Carrega os itens do LocalStorage
+    let items = getItensBD();  
 
-    // Função de clique no botão "Incluir"
+   
     btnNew.onclick = () => {
         
-        // Validação de campos obrigatórios
+       
         if (descItem.value.trim() === "" || amount.value.trim() === "" || type.value === "") {
             return alert("Preencha todos os campos!");
         }
 
-        // Validação do valor
+       
         const amountValue = parseFloat(amount.value);
         if (isNaN(amountValue) || amountValue <= 0) {
             return alert("O valor deve ser um número positivo.");
         }
 
-        // Adiciona o novo item à lista
+       
         items.push({
             desc: descItem.value,
             amount: amountValue.toFixed(2),
@@ -52,22 +52,22 @@ document.addEventListener('DOMContentLoaded', function() {
         setItensBD();
         loadItens();
 
-        // Limpa os campos de entrada
+        
         descItem.value = "";
         amount.value = "";
     };
 
-    // Função de deletar item
+    
     function deleteItem(index) {
-        // Remove o item do array
+        
         items.splice(index, 1);
-        // Atualiza o LocalStorage
+        
         setItensBD();
-        // Recarrega os itens na tabela
+       
         loadItens();
     }
 
-    // Função para inserir um item na tabela
+  
     function insertItem(item, index) {
         let tr = document.createElement("tr");
 
@@ -86,27 +86,27 @@ document.addEventListener('DOMContentLoaded', function() {
             </td>
         `;
         
-        // Adiciona a linha à tabela
+     
         tbody.appendChild(tr);
 
-        // Adiciona o evento de deleção no botão de excluir
+       
         tr.querySelector(".deleteBtn").addEventListener("click", function() {
             const index = parseInt(this.getAttribute("data-index"));
             deleteItem(index);
         });
     }
 
-    // Função para carregar os itens na tabela
+   
     function loadItens() {
-        tbody.innerHTML = "";  // Limpa a tabela
+        tbody.innerHTML = ""; 
         items.forEach((item, index) => {
             insertItem(item, index);
         });
 
-        getTotals();  // Atualiza os totais
+        getTotals();  
     }
 
-    // Função para calcular e mostrar os totais
+   
     function getTotals() {
         const amountIncomes = items.filter(item => item.type === "Entrada").map(item => parseFloat(item.amount));
         const amountExpenses = items.filter(item => item.type === "Saída").map(item => parseFloat(item.amount));
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
         total.textContent = totalBalance;
     }
 
-    // Função de integração com a IA (simulação de uma resposta da IA)
+   
     async function callAuxilioIA() {
         const analysisData = {
             totalIncomes: parseFloat(incomes.textContent),
@@ -147,9 +147,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Botão Auxílio IA
     btnAuxilioIA.onclick = callAuxilioIA;
 
-    // Carrega os itens ao iniciar
+   
     loadItens(); 
 });
