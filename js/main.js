@@ -1,95 +1,113 @@
-const tbody = document.querySelector("tbody");
-const descItem = document.querySelector("#desc");
-const amount = document.querySelector("#amount");
-const type = document.querySelector("#type");
-const btnNew = document.querySelector("#btnNew");
+"use strict"
 
-const incomes = document.querySelector(".incomes");
-const expenses = document.querySelector(".expenses");
-const total = document.querySelector(".total");
+document.addEventListener('DOMContentLoaded', function() {
+    
+    //manipulação do LocalStorage
+    const getItensBD = () => {
+        const storedItems = JSON.parse(localStorage.getItem("db_items"));
+        return storedItems || [];
+    };
 
-let items;
+    const setItensBD = () => {
+        localStorage.setItem("db_items", JSON.stringify(items));
+    };
 
-btnNew.onclick = () => {
-  if (descItem.value === "" || amount.value === "" || type.value === "") {
-    return alert("Preencha todos os campos!");
-  }
+    const tbody = document.querySelector("tbody");
+    const descItem = document.querySelector("#desc");
+    const amount = document.querySelector("#amount");
+    const type = document.querySelector("#type");
+    const btnNew = document.querySelector("#btnNew");
 
-  items.push({
-    desc: descItem.value,
-    amount: Math.abs(amount.value).toFixed(2),
-    type: type.value,
-  });
+    const incomes = document.querySelector(".incomes");
+    const expenses = document.querySelector(".expenses");
+    const total = document.querySelector(".total");
 
-  setItensBD();
+   
+    let items = getItensBD(); 
 
-  loadItens();
+    
+    btnNew.onclick = () => {
+        
+        if (descItem.value.trim() === "" || amount.value.trim() === "" || type.value === "") {
+            return alert("Preencha todos os campos!");
+        }
 
-  descItem.value = "";
-  amount.value = "";
-};
+        
+        const amountValue = parseFloat(amount.value);
+        if (isNaN(amountValue) || amountValue <= 0) {
+            return alert("O valor deve ser um número positivo.");
+        }
 
-function deleteItem(index) {
-  items.splice(index, 1);
-  setItensBD();
-  loadItens();
-}
+        
+        items.push({
+            desc: descItem.value,
+            amount: amountValue.toFixed(2),
+            type: type.value,
+        });
 
-function insertItem(item, index) {
-  let tr = document.createElement("tr");
+       
+        setItensBD();
+        loadItens();
 
-  tr.innerHTML = `
-    <td>${item.desc}</td>
-    <td>R$ ${item.amount}</td>
-    <td class="columnType">${
-      item.type === "Entrada"
-        ? '<i class="bx bxs-chevron-up-circle"></i>'
-        : '<i class="bx bxs-chevron-down-circle"></i>'
-    }</td>
-    <td class="columnAction">
-      <button onclick="deleteItem(${index})"><i class='bx bx-trash'></i></button>
-    </td>
-  `;
+       
+        descItem.value = "";
+        amount.value = "";
+    };
 
-  tbody.appendChild(tr);
-}
+    // deletar item pelo índice
+    function deleteItem(index) {
+        items.splice(index, 1);  
+        setItensBD();  
+        loadItens(); 
+    }
 
-function loadItens() {
-  items = getItensBD();
-  tbody.innerHTML = "";
-  items.forEach((item, index) => {
-    insertItem(item, index);
-  });
+   
+    function insertItem(item, index) {
+        let tr = document.createElement("tr");
 
-  getTotals();
-}
+        tr.innerHTML = `
+            <td>${item.desc}</td>
+            <td>R$ ${item.amount}</td>
+            <td class="columnType">
+                ${item.type === "Entrada"
+                    ? '<i class="bx bxs-chevron-up-circle"></i>'
+                    : '<i class="bx bxs-chevron-down-circle"></i>'}
+            </td>
+            <td class="columnAction">
+                <button onclick="deleteItem(${index})"><i class='bx bx-trash'></i></button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    }
 
-function getTotals() {
-  const amountIncomes = items
-    .filter((item) => item.type === "Entrada")
-    .map((transaction) => Number(transaction.amount));
+    // carregar os itens do LocalStorage na tabela
+    function loadItens() {
+        tbody.innerHTML = "";  
+        items.forEach((item, index) => {
+            insertItem(item, index);
+        });
 
-  const amountExpenses = items
-    .filter((item) => item.type === "Saída")
-    .map((transaction) => Number(transaction.amount));
+        getTotals(); 
+    }
 
-  const totalIncomes = amountIncomes
-    .reduce((acc, cur) => acc + cur, 0)
-    .toFixed(2);
+  
+    function getTotals() {
+        const amountIncomes = items.filter(item => item.type === "Entrada").map(item => parseFloat(item.amount));
+        const amountExpenses = items.filter(item => item.type === "Saída").map(item => parseFloat(item.amount));
 
-  const totalExpenses = Math.abs(
-    amountExpenses.reduce((acc, cur) => acc + cur, 0)
-  ).toFixed(2);
+   
+        const totalIncomes = amountIncomes.reduce((acc, cur) => acc + cur, 0).toFixed(2);
+        const totalExpenses = amountExpenses.reduce((acc, cur) => acc + cur, 0).toFixed(2);
 
-  const totalItems = (totalIncomes - totalExpenses).toFixed(2);
+      
+        const totalBalance = (parseFloat(totalIncomes) - parseFloat(totalExpenses)).toFixed(2);
 
-  incomes.innerHTML = totalIncomes;
-  expenses.innerHTML = totalExpenses;
-  total.innerHTML = totalItems;
-}
+    
+        incomes.textContent = totalIncomes;
+        expenses.textContent = totalExpenses;
+        total.textContent = totalBalance;
+    }
 
-const getItensBD = () => JSON.parse(localStorage.getItem("db_items")) ?? [];
-const setItensBD = () =>
-  localStorage.setItem("db_items", JSON.stringify(items));
-
-loadItens();
+ 
+    loadItens(); 
+});
